@@ -1,0 +1,42 @@
+# CMake build files
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+# Executables
+*.exe
+*.out
+*.app
+RTCP
+
+# CUDA intermediate files
+*.ptx
+*.cubin
+*.log
+
+# Backup files
+*~
+*.swp
+*.bak
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Python cache (for training scripts)
+__pycache__/
+*.pyc
+
+# Data (if you want to ignore large demo datasets)
+# Comment these lines if you want to include data in the repo
+data/*.npy
+data/pointnet_weights.bin
+
+# IDE/project files
+.vscode/
+*.idea/
+*.sublime-workspace
+*.sublime-project
+
