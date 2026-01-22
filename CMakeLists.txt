@@ -42,6 +42,7 @@ add_definitions(${PCL_DEFINITIONS})
 set(SOURCES
     src/main.cpp
     src/PointCloudProcessor.cpp
+    src/PointCloudProcessorCUDA.cu
     src/PointNetNN.cu
     src/IMUProcessor.cpp
 )
