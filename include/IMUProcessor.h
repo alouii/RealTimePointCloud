@@ -1,11 +1,12 @@
 #pragma once
-struct IMUData { float qx,qy,qz,qw; };
+#include <vector>
 
 class IMUProcessor {
 public:
-    IMUProcessor();
-    void update(const IMUData& imu);
-    void getRotationMatrix(float R[3][3]) const;
-private:
-    float qx,qy,qz,qw;
+    IMUProcessor() = default;
+
+    // Dummy rotation matrix
+    std::vector<std::vector<float>> getRotationMatrix() const {
+        return std::vector<std::vector<float>>(3, std::vector<float>(3, 0.0f));
+    }
 };
