@@ -1,21 +1,34 @@
 #include "PointCloudProcessor.h"
-#include <pcl/point_types.h>
-#include <pcl/point_cloud.h>
+#include <cuda_runtime.h>
+#include <vector>
+#include <iostream>
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudProcessor::depthToPointCloud(
-    const std::vector<float>& depth, int width, int height)
-{
-    auto cloud = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    cloud->width = width;
-    cloud->height = height;
-    cloud->is_dense = false;
-    cloud->points.resize(width * height);
+// Declare external CUDA function
+extern void runTransformKernel(float3* d_points, int N);
 
-    for (int i = 0; i < width * height; ++i) {
-        cloud->points[i].x = (float)(i % width);
-        cloud->points[i].y = (float)(i / width);
-        cloud->points[i].z = depth[i];  // depth value
+void PointCloudProcessor::processPointCloudCUDA(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    int N = cloud->points.size();
+    float3* d_points;
+    cudaMalloc(&d_points, N * sizeof(float3));
+
+    std::vector<float3> h_points(N);
+    for (int i = 0; i < N; ++i) {
+        h_points[i].x = cloud->points[i].x;
+        h_points[i].y = cloud->points[i].y;
+        h_points[i].z = cloud->points[i].z;
     }
 
-    return cloud;
+    cudaMemcpy(d_points, h_points.data(), N * sizeof(float3), cudaMemcpyHostToDevice);
+
+    // Call the CUDA kernel
+    runTransformKernel(d_points, N);
+
+    cudaMemcpy(h_points.data(), d_points, N * sizeof(float3), cudaMemcpyDeviceToHost);
+    for (int i = 0; i < N; ++i) {
+        cloud->points[i].x = h_points[i].x;
+        cloud->points[i].y = h_points[i].y;
+        cloud->points[i].z = h_points[i].z;
+    }
+
+    cudaFree(d_points);
 }
