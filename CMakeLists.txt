@@ -26,7 +26,7 @@ find_package(PCL 1.15 REQUIRED COMPONENTS common io octree)
 include_directories(
     ${PCL_INCLUDE_DIRS}
     ${CUDA_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/include
 )
 add_definitions(${PCL_DEFINITIONS})
 
