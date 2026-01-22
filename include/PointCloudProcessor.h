@@ -1,19 +1,16 @@
 #pragma once
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include <vector>
-#include "IMUProcessor.h"
-
-struct Point3D { float x,y,z; };
 
 class PointCloudProcessor {
 public:
-    PointCloudProcessor(int maxPoints);
-    ~PointCloudProcessor();
-    void fuseWithIMU(std::vector<Point3D>& points, const IMUProcessor& imu);
-    void cudaFilter(float threshold);
-    Point3D* getDevicePoints() { return d_points; }
-    void copyToHost(std::vector<Point3D>& points);
+    PointCloudProcessor() = default;
 
-private:
-    int maxPoints;
-    Point3D* d_points;
+    // Convert depth frame to point cloud
+    pcl::PointCloud<pcl::PointXYZ>::Ptr depthToPointCloud(
+        const std::vector<float>& depthData, int width, int height);
+
+    // CUDA placeholder: apply a transformation to cloud points
+    void processPointCloudCUDA(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 };

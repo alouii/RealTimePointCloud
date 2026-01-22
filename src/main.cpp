@@ -4,7 +4,8 @@
 #include "PointCloudProcessor.h"
 #include "IMUProcessor.h"
 #include "PointNetNN.h"
-#include <pcl/visualization/cloud_viewer.h>
+//#include <pcl/visualization/cloud_viewer.h>
+#include </home/aloui/US/pcl/visualization/include/pcl/visualization/cloud_viewer.h>
 #include <pcl/point_types.h>
 
 int main(){
