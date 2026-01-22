@@ -1,4 +1,4 @@
-#include "PointCloudProcessor.h"
+#include "../include/PointCloudProcessor.h"
 #include <cuda_runtime.h>
 #include <iostream>
 

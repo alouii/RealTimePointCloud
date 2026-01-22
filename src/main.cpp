@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "PointCloudProcessor.h"
+#include "../include/PointCloudProcessor.h"
 #include "IMUProcessor.h"
 
 // OpenCV for USB camera

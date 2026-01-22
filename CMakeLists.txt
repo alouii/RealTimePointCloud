@@ -19,14 +19,20 @@ find_package(CUDA REQUIRED)
 # ----------------------------
 # Find PCL (core only)
 # ----------------------------
-set(PCL_FIND_VISUALIZATION OFF)
+#set(PCL_FIND_VISUALIZATION OFF)
 find_package(PCL 1.15 REQUIRED COMPONENTS common io octree)
 
+# ----------------------------
+# Find OpenCV
+# ----------------------------
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
 # Include directories
 include_directories(
     ${PCL_INCLUDE_DIRS}
     ${CUDA_INCLUDE_DIRS}
     ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/src
 )
 add_definitions(${PCL_DEFINITIONS})
 
@@ -51,4 +57,5 @@ add_executable(RealTimePointCloud ${SOURCES})
 target_link_libraries(RealTimePointCloud
     ${PCL_LIBRARIES}
     ${CUDA_LIBRARIES}
+    ${OpenCV_LIBRARIES}
 )
