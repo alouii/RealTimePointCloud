@@ -1,7 +1,7 @@
 #include <cuda_runtime.h>
 #include <pcl/point_types.h>
 
-struct float3 { float x, y, z; }; // temporary struct
+//struct float3 { float x, y, z; }; // temporary struct
 
 __global__ void transformKernel(float3* points, int N) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
