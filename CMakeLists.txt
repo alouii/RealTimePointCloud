@@ -6,6 +6,7 @@ project(RealTimePointCloudNN LANGUAGES C CXX CUDA)
 # Compiler setup
 # ----------------------------
 set(PCL_FIND_VISUALIZATION OFF)
+find_package(PCL 1.15 REQUIRED COMPONENTS common io octree)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
