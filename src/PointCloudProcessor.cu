@@ -1,32 +1,61 @@
 #include "PointCloudProcessor.h"
 #include <cuda_runtime.h>
+#include <iostream>
 
-__global__ void removeOutliersKernel(Point3D* points,int N,float threshold){
-    int idx=blockIdx.x*blockDim.x+threadIdx.x;
-    if(idx<N && points[idx].z>threshold) points[idx].z=0;
+pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudProcessor::depthToPointCloud(
+        const std::vector<float>& depthData, int width, int height) {
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    cloud->width = width;
+    cloud->height = height;
+    cloud->is_dense = false;
+    cloud->points.resize(width * height);
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            float z = depthData[y * width + x];
+            cloud->at(x, y).x = x * z;
+            cloud->at(x, y).y = y * z;
+            cloud->at(x, y).z = z;
+        }
+    }
+    return cloud;
 }
 
-PointCloudProcessor::PointCloudProcessor(int maxPoints):maxPoints(maxPoints){
-    cudaMalloc(&d_points,maxPoints*sizeof(Point3D));
-}
-PointCloudProcessor::~PointCloudProcessor(){ cudaFree(d_points); }
-
-void PointCloudProcessor::fuseWithIMU(std::vector<Point3D>& points,const IMUProcessor& imu){
-    float R[3][3]; imu.getRotationMatrix(R);
-    for(auto& p: points){
-        Point3D tmp=p;
-        p.x=R[0][0]*tmp.x+R[0][1]*tmp.y+R[0][2]*tmp.z;
-        p.y=R[1][0]*tmp.x+R[1][1]*tmp.y+R[1][2]*tmp.z;
-        p.z=R[2][0]*tmp.x+R[2][1]*tmp.y+R[2][2]*tmp.z;
+// CUDA placeholder
+__global__ void transformKernel(float3* points, int N) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < N) {
+        points[idx].z += 0.01f; // simple z-offset
     }
 }
 
-void PointCloudProcessor::cudaFilter(float threshold){
-    int blockSize=256,numBlocks=(maxPoints+blockSize-1)/blockSize;
-    removeOutliersKernel<<<numBlocks,blockSize>>>(d_points,maxPoints,threshold);
-    cudaDeviceSynchronize();
-}
+void PointCloudProcessor::processPointCloudCUDA(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    int N = cloud->points.size();
+    float3* d_points;
+    cudaMalloc(&d_points, N * sizeof(float3));
 
-void PointCloudProcessor::copyToHost(std::vector<Point3D>& points){
-    cudaMemcpy(points.data(),d_points,maxPoints*sizeof(Point3D),cudaMemcpyDeviceToHost);
+    // Copy to device
+    std::vector<float3> h_points(N);
+    for (int i = 0; i < N; ++i) {
+        h_points[i].x = cloud->points[i].x;
+        h_points[i].y = cloud->points[i].y;
+        h_points[i].z = cloud->points[i].z;
+    }
+    cudaMemcpy(d_points, h_points.data(), N * sizeof(float3), cudaMemcpyHostToDevice);
+
+    // Launch kernel
+    int threads = 256;
+    int blocks = (N + threads - 1) / threads;
+    transformKernel<<<blocks, threads>>>(d_points, N);
+    cudaDeviceSynchronize();
+
+    // Copy back
+    cudaMemcpy(h_points.data(), d_points, N * sizeof(float3), cudaMemcpyDeviceToHost);
+    for (int i = 0; i < N; ++i) {
+        cloud->points[i].x = h_points[i].x;
+        cloud->points[i].y = h_points[i].y;
+        cloud->points[i].z = h_points[i].z;
+    }
+
+    cudaFree(d_points);
 }
