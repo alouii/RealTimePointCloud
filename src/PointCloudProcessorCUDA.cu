@@ -14,3 +14,6 @@ extern "C" void runTransformKernel(float3* d_points, int N) {
     transformKernel<<<blocks, threads>>>(d_points, N);
     cudaDeviceSynchronize();
 }
+
+
+// Example usage with PCL point cloud
