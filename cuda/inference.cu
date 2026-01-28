@@ -450,7 +450,7 @@ void non_max_suppression_3d(
     );
     
     // Compact non-suppressed detections
-    std::vector<bool> h_suppressed(num_detections);
+    std::vector<uint8_t> h_suppressed(num_detections);
     CUDA_CHECK(cudaMemcpy(h_suppressed.data(), d_suppressed,
                           num_detections * sizeof(bool),
                           cudaMemcpyDeviceToHost));

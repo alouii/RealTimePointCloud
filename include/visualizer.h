@@ -7,6 +7,7 @@
 
 #ifdef USE_PCL_VISUALIZATION
 #include <pcl/visualization/pcl_visualizer.h>
+//#include"/home/aloui/US/pcl/visualization/include/pcl/visualization/pcl_visualizer.h"
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 #endif
