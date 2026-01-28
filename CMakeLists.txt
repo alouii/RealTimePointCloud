@@ -1,62 +1,101 @@
 cmake_minimum_required(VERSION 3.18)
-project(RealTimePointCloudNN LANGUAGES C CXX CUDA)
+project(PointCloudPipeline CUDA CXX)
 
-# ----------------------------
-# Compiler setup
-# ----------------------------
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CUDA_STANDARD 17)
+set(CMAKE_CUDA_ARCHITECTURES 75 80 86)
 
-# Optional: force GCC 12
-# set(CMAKE_C_COMPILER "/usr/bin/gcc-12")
-# set(CMAKE_CXX_COMPILER "/usr/bin/g++-12")
-
-# ----------------------------
-# Find CUDA
-# ----------------------------
+# Find required packages
 find_package(CUDA REQUIRED)
+find_package(OpenMP REQUIRED)
 
-# ----------------------------
-# Find PCL (core only)
-# ----------------------------
-#set(PCL_FIND_VISUALIZATION OFF)
-find_package(PCL 1.15 REQUIRED COMPONENTS common io octree)
+# Optional: PCL for visualization
+find_package(PCL 1.10 QUIET)
+find_package(Eigen3 REQUIRED)
 
-# ----------------------------
-# Find OpenCV
-# ----------------------------
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
 # Include directories
 include_directories(
-    ${PCL_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CUDA_INCLUDE_DIRS}
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/src
+    ${EIGEN3_INCLUDE_DIR}
 )
-add_definitions(${PCL_DEFINITIONS})
 
-# ----------------------------
+if(PCL_FOUND)
+    include_directories(${PCL_INCLUDE_DIRS})
+    link_directories(${PCL_LIBRARY_DIRS})
+    add_definitions(${PCL_DEFINITIONS})
+    add_definitions(-DUSE_PCL_VISUALIZATION)
+endif()
+
+# CUDA compilation flags
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};
+    -O3;
+    -use_fast_math;
+    -Xptxas -O3;
+    --expt-relaxed-constexpr;
+)
+
 # Source files
-# ----------------------------
-set(SOURCES
-    src/main.cpp
-    src/PointCloudProcessor.cpp
-    src/PointCloudProcessorCUDA.cu
-    src/PointNetNN.cu
-    src/IMUProcessor.cpp
+set(CUDA_SOURCES
+    cuda/preprocessing.cu
+    cuda/inference.cu
+    cuda/memory_pool.cu
+    cuda/voxelization.cu
 )
 
-# ----------------------------
-# Executable target
-# ----------------------------
-add_executable(RealTimePointCloud ${SOURCES})
+set(CPP_SOURCES
+    src/pipeline.cpp
+    src/point_cloud.cpp
+    src/config.cpp
+    src/timer.cpp
+)
 
-# ----------------------------
-# Link libraries
-# ----------------------------
-target_link_libraries(RealTimePointCloud
-    ${PCL_LIBRARIES}
+if(PCL_FOUND)
+    set(CPP_SOURCES ${CPP_SOURCES} src/visualizer.cpp)
+endif()
+
+# Create CUDA library
+add_library(cuda_kernels STATIC ${CUDA_SOURCES})
+set_target_properties(cuda_kernels PROPERTIES 
+    CUDA_SEPARABLE_COMPILATION ON
+    POSITION_INDEPENDENT_CODE ON
+)
+
+# Main executable
+add_executable(point_cloud_pipeline src/main.cpp ${CPP_SOURCES})
+target_link_libraries(point_cloud_pipeline 
+    cuda_kernels
     ${CUDA_LIBRARIES}
-    ${OpenCV_LIBRARIES}
+    OpenMP::OpenMP_CXX
+)
+
+if(PCL_FOUND)
+    target_link_libraries(point_cloud_pipeline ${PCL_LIBRARIES})
+endif()
+
+# Benchmark executable
+add_executable(benchmark tests/benchmark.cpp ${CPP_SOURCES})
+target_link_libraries(benchmark 
+    cuda_kernels
+    ${CUDA_LIBRARIES}
+    OpenMP::OpenMP_CXX
+)
+
+# Test executable
+add_executable(unit_tests tests/unit_tests.cpp ${CPP_SOURCES})
+target_link_libraries(unit_tests 
+    cuda_kernels
+    ${CUDA_LIBRARIES}
+    OpenMP::OpenMP_CXX
+)
+
+if(PCL_FOUND)
+    target_link_libraries(benchmark ${PCL_LIBRARIES})
+    target_link_libraries(unit_tests ${PCL_LIBRARIES})
+endif()
+
+# Set output directories
+set_target_properties(point_cloud_pipeline benchmark unit_tests
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )

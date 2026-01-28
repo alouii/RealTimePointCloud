@@ -1,0 +1,53 @@
+# Point Cloud Processing Pipeline Configuration
+
+# ==============================================
+# Input Parameters
+# ==============================================
+
+# Maximum number of points to process
+max_points = 100000
+
+# Voxel size for downsampling (meters)
+voxel_size = 0.1
+
+# Maximum range for point filtering (meters)
+max_range = 50.0
+
+# ==============================================
+# Processing Parameters
+# ==============================================
+
+# Batch size for processing
+batch_size = 1
+
+# Number of CPU threads for parallel operations
+num_threads = 4
+
+# Enable dynamic voxelization (adaptive voxel sizes)
+use_dynamic_voxelization = false
+
+# ==============================================
+# Model Parameters
+# ==============================================
+
+# Path to trained model weights
+model_path = models/detection_model.pth
+
+# Number of object classes
+num_classes = 10
+
+# Confidence threshold for detections
+confidence_threshold = 0.5
+
+# IoU threshold for Non-Maximum Suppression
+nms_threshold = 0.5
+
+# ==============================================
+# Memory Parameters
+# ==============================================
+
+# GPU memory pool size in bytes (1GB = 1073741824)
+memory_pool_size = 1073741824
+
+# Use pinned memory for faster CPU-GPU transfers
+use_pinned_memory = true
