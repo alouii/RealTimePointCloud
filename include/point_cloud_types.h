@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <limits>  
+
 
 // Point structure with CUDA compatibility
 struct Point {
@@ -27,13 +29,26 @@ struct Voxel {
 };
 
 // Bounding box
-struct BoundingBox {
+/*struct BoundingBox {
     float min_x, min_y, min_z;
     float max_x, max_y, max_z;
     
     __host__ __device__ BoundingBox() 
         : min_x(INFINITY), min_y(INFINITY), min_z(INFINITY),
           max_x(-INFINITY), max_y(-INFINITY), max_z(-INFINITY) {}
+};*/
+struct BoundingBox {
+    float min_x, min_y, min_z;
+    float max_x, max_y, max_z;
+
+    __host__ __device__ BoundingBox()
+        : min_x(std::numeric_limits<float>::infinity()),
+          min_y(std::numeric_limits<float>::infinity()),
+          min_z(std::numeric_limits<float>::infinity()),
+          max_x(-std::numeric_limits<float>::infinity()),
+          max_y(-std::numeric_limits<float>::infinity()),
+          max_z(-std::numeric_limits<float>::infinity())
+    {}
 };
 
 // Feature vector for inference
