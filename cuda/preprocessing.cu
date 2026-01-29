@@ -3,6 +3,10 @@
 #include <device_launch_parameters.h>
 #include <curand_kernel.h>
 #include <cmath>
+#include <thrust/device_ptr.h>
+#include <thrust/sort.h>
+#include <thrust/scan.h>
+#include <thrust/execution_policy.h>    
 
 namespace preprocessing {
 
