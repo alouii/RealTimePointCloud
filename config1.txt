@@ -1,7 +1,7 @@
 # Point Cloud Pipeline Configuration
 
 # Maximum number of points to process per frame
-max_points = 500000
+max_points = 5000000
 
 # Voxel size for downsampling (meters)
 voxel_size = 0.05
@@ -14,10 +14,9 @@ max_range = 50.0
 # - sensor: live sensor (LiDAR / depth camera)
 # Leave empty for synthetic default
 input_source = input_file
-input_file = data/sample_cloud.pcd
+input_file = /home/aloui/US/RealTimePointCloud/data/sample_cloud.pcd
 
 # Detection thresholds
-detection_confidence_threshold = 0.5
-
+detection_confidence_threshold = 0.1
 # GPU acceleration
 use_gpu = true

@@ -6,7 +6,7 @@
 #include <cstring>
 
 #ifdef USE_PCL_VISUALIZATION
-#include <pcl/io/pcd_io.h>
+#include <pcl/io/pcd_io.h>  
 #include <pcl/point_types.h>
 #endif
 
@@ -128,6 +128,8 @@ int main(int argc, char** argv) {
             return str.size() >= suffix.size() &&
             str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
         };
+        if (has_suffix(input_file, ".pcd")) points = load_point_cloud_pcd(input_file);
+        else points = load_point_cloud_bin(input_file);
 #else
         points = load_point_cloud_bin(input_file);
 #endif
