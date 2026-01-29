@@ -24,7 +24,7 @@ void Visualizer::initialize_viewer() {
     viewer_->initCameraParameters();
     viewer_->setCameraPosition(0, 0, 50, 0, 0, 0, 0, 1, 0);
 }
-
+/*
 void Visualizer::update_point_cloud(const std::vector<Point>& points) {
     pcl::PointCloud<pcl::PointXYZI>::Ptr cloud(
         new pcl::PointCloud<pcl::PointXYZI>
@@ -44,6 +44,31 @@ void Visualizer::update_point_cloud(const std::vector<Point>& points) {
     
     if (!viewer_->updatePointCloud(cloud, "point_cloud")) {
         viewer_->addPointCloud(cloud, "point_cloud");
+        viewer_->setPointCloudRenderingProperties(
+            pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "point_cloud"
+        );
+    }
+}
+*/
+void Visualizer::update_point_cloud(const std::vector<Point>& points) {
+    auto cloud = pcl::make_shared<pcl::PointCloud<pcl::PointXYZI>>();
+
+    cloud->width = points.size();
+    cloud->height = 1;
+    cloud->is_dense = false;
+    cloud->points.resize(points.size());
+
+    for (size_t i = 0; i < points.size(); ++i) {
+        cloud->points[i].x = points[i].x;
+        cloud->points[i].y = points[i].y;
+        cloud->points[i].z = points[i].z;
+        cloud->points[i].intensity = points[i].intensity;
+    }
+
+    pcl::PointCloud<pcl::PointXYZI>::ConstPtr cloud_const = cloud;
+
+    if (!viewer_->updatePointCloud<pcl::PointXYZI>(cloud_const, "point_cloud")) {
+        viewer_->addPointCloud<pcl::PointXYZI>(cloud_const, "point_cloud");
         viewer_->setPointCloudRenderingProperties(
             pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "point_cloud"
         );

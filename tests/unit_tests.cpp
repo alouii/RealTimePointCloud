@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
+#include <fstream>
 
 #define TEST_ASSERT(condition, message) \
     do { \
