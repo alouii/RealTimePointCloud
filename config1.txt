@@ -13,7 +13,7 @@ max_range = 50.0
 # - file: path to .pcd/.ply file
 # - sensor: live sensor (LiDAR / depth camera)
 # Leave empty for synthetic default
-input_source = file
+input_source = input_file
 input_file = data/sample_cloud.pcd
 
 # Detection thresholds
