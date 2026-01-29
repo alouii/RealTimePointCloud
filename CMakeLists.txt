@@ -4,9 +4,9 @@ project(PointCloudPipeline CUDA C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CUDA_STANDARD 17)
 #
-set(CMAKE_CUDA_ARCHITECTURES Auto)
+#set(CMAKE_CUDA_ARCHITECTURES Auto)
 # # Tell CMake to compile device code for GTX 1060
-#set(CMAKE_CUDA_ARCHITECTURES 61)
+set(CMAKE_CUDA_ARCHITECTURES 61)
 #set(CMAKE_CUDA_ARCHITECTURES 75 80 86)
 #Add relaxed constexpr support
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --expt-relaxed-constexpr")
