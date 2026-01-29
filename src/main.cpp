@@ -1,3 +1,4 @@
+//run with ./point_cloud_pipeline -i data/sample_cloud.pcd -c config.txt -v
 #include "pipeline.h"
 #include "visualizer.h"
 #include <iostream>
