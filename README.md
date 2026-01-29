@@ -85,7 +85,7 @@ Input Point Cloud
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/point-cloud-pipeline.git
+git clone https://github.com/alouii/point-cloud-pipeline.git
 cd point-cloud-pipeline
 ```
 
@@ -372,9 +372,9 @@ If you use this code in your research, please cite:
 ```bibtex
 @misc{pointcloud-pipeline,
   title={Real-Time Point Cloud Processing Pipeline},
-  author={Your Name},
-  year={2025},
-  url={https://github.com/yourusername/point-cloud-pipeline}
+  author={Lassaad Aloui},
+  year={2026},
+  url={https://github.com/alouii/point-cloud-pipeline}
 }
 ```
 
@@ -386,4 +386,4 @@ If you use this code in your research, please cite:
 
 ## Contact
 
-For questions or issues, please open a GitHub issue or contact [your email].
+For questions or issues, please open a GitHub issue or contact [aloui.lassaad@gmail.com].

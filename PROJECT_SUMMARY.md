@@ -327,11 +327,11 @@ Possible extensions (not implemented):
 
 **Citation**: If you use this code in research:
 ```bibtex
-@misc{pointcloud-pipeline-2025,
+@misc{pointcloud-pipeline-2026,
   title={Real-Time Point Cloud Processing Pipeline with CUDA},
-  author={[Your Name]},
-  year={2025},
-  howpublished={\url{github.com/...}}
+  author={[Lassaad Aloui]},
+  year={2026},
+  
 }
 ```
 

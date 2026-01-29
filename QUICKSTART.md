@@ -134,4 +134,4 @@ sudo apt-get install cmake
 For issues, please check:
 1. [README.md](README.md) - Full documentation
 2. [Troubleshooting](README.md#troubleshooting) section
-3. GitHub Issues (if applicable)
+3. GitHub Issues 
