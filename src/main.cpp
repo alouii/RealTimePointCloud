@@ -4,7 +4,6 @@
 #include <fstream>
 #include <vector>
 #include <cstring>
-#include <cmath>
 
 // Load point cloud from binary file
 std::vector<Point> load_point_cloud_bin(const std::string& filename) {
