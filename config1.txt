@@ -1,0 +1,23 @@
+# Point Cloud Pipeline Configuration
+
+# Maximum number of points to process per frame
+max_points = 500000
+
+# Voxel size for downsampling (meters)
+voxel_size = 0.05
+
+# Maximum range (meters) to keep points
+max_range = 50.0
+
+# Input source: 
+# - file: path to .pcd/.ply file
+# - sensor: live sensor (LiDAR / depth camera)
+# Leave empty for synthetic default
+input_source = file
+input_file = data/sample_cloud.pcd
+
+# Detection thresholds
+detection_confidence_threshold = 0.5
+
+# GPU acceleration
+use_gpu = true
